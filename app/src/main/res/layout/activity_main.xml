@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Process" />
+    <TextView
+        android:id="@+id/text_view_countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:id="@+id/lyt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+            <RelativeLayout
+                android:layout_width="360dp"
+                android:layout_height="360dp"
+                android:background="@drawable/back">
+
+                <ImageView
+                    android:id="@+id/picture"
+                    android:layout_width="107dp"
+                    android:layout_height="152dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="22dp"
+                    android:layout_marginTop="96dp" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="91dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/picture"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="31dp"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/desig"
+                    android:layout_width="91dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/name"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="31dp"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="#FFFFFF" />
+            </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
