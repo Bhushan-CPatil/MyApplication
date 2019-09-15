@@ -1,9 +1,15 @@
 package com.image.process;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,9 +20,13 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,33 +55,35 @@ import static java.lang.Thread.sleep;
 
 public class MainActivity extends AppCompatActivity {
 
-    private LinearLayout linearLayout;
+    //private LinearLayout linearLayout;
     private Button saveBtn,clickImage;
     ViewDialog progress;
     public List<JsonResItem> imagelist = new ArrayList<>();
-    ImageView picture;
-    TextView name,desig;
+    //ImageView picture;
+    //TextView name,desig;
     ArrayList<String> imageUrl =new ArrayList<String>();
     Handler handler=null;
     private boolean mTimerRunning;
     private long mTimeLeftInMillis;
     private CountDownTimer mCountDownTimer;
     TextView mTextViewCountDown;
+    RecyclerView imagelistad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        linearLayout = findViewById(R.id.lyt);
+        //linearLayout = findViewById(R.id.lyt);
         saveBtn = findViewById(R.id.button1);
         //clickImage = findViewById(R.id.clickImage);
         mTextViewCountDown = findViewById(R.id.text_view_countdown);
-        picture = findViewById(R.id.picture);
-        name = findViewById(R.id.name);
-        desig = findViewById(R.id.desig);
+        //picture = findViewById(R.id.picture);
+        imagelistad = findViewById(R.id.imagelistad);
+        //name = findViewById(R.id.name);
+        //desig = findViewById(R.id.desig);
         progress = new ViewDialog(this);
         handler = new Handler();
-
+        setDocLstAdapter();
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,9 +110,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
                 DefaultResponse res = response.body();
+                progress.dismiss();
                 if(!res.isError()){
                     imagelist = res.getJsonRes();
-                    for (int i = 0 ; i < imagelist.size() ; i++){
+                    imagelistad.getAdapter().notifyDataSetChanged();
+                    /*for (int i = 0 ; i < imagelist.size() ; i++){
                         final int finalI = i;
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -138,22 +152,22 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                        /*for(int x=0; x<=200000;x++){
+                        *//*for(int x=0; x<=200000;x++){
                             Log.d("forloop",""+x);
-                        }*/
+                        }*//*
 
                         //showOrder(model.getId());
                         //mTimeLeftInMillis = 3 * 1000;
                         //startTimer();
-                        /*try {
+                        *//*try {
                             //sleep(10000);
                             TimeUnit.SECONDS.sleep(5);
 
                         } catch (InterruptedException e) {
                             e.printStackTrace();
-                        }*/
-                    }
-                    progress.dismiss();
+                        }*//*
+                    }*/
+
                 }else{
                     progress.dismiss();
                     Toast.makeText(MainActivity.this, "List is empty", Toast.LENGTH_SHORT).show();
@@ -172,16 +186,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void process(String id) {
-            File file = saveBitMap(MainActivity.this, linearLayout, id);    //which view you want to pass that view as parameter
+    public File process(String id, LinearLayout linearLayout) {
+            File file = saveBitMap(MainActivity.this, linearLayout, id, linearLayout);    //which view you want to pass that view as parameter
             if (file != null) {
                 Log.i("TAG", "Drawing saved to the gallery!");
+                return file;
             } else {
                 Log.i("TAG", "Oops! Image could not be saved.");
             }
+            return null;
     }
 
-    private File saveBitMap(Context context, View drawView, String id){
+    private File saveBitMap(Context context, View drawView, String id, LinearLayout linearLayout){
         File pictureFileDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"Handcare");
         if (!pictureFileDir.exists()) {
             boolean isDirectoryCreated = pictureFileDir.mkdirs();
@@ -241,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startTimer() {
+    /*private void startTimer() {
         mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -252,13 +268,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 mTimerRunning = false;
-                process("00001");
             }
         }.start();
 
         mTimerRunning = true;
 
-    }
+    }*/
 
     private void updateCountDownText() {
         int minutes = (int) (mTimeLeftInMillis / 1000) / 60;
@@ -267,5 +282,170 @@ public class MainActivity extends AppCompatActivity {
         String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
 
         mTextViewCountDown.setText(timeLeftFormatted);
+    }
+
+    public void setDocLstAdapter() {
+        imagelistad.setNestedScrollingEnabled(false);
+        imagelistad.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        imagelistad.setAdapter(new RecyclerView.Adapter() {
+                                   @NonNull
+                                   @Override
+                                   public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+                                       View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.adapter_images, viewGroup, false);
+                                       Holder holder = new Holder(view);
+                                       return holder;
+                                   }
+
+                                   @Override
+                                   public long getItemId(int position) {
+                                       return position;
+                                   }
+
+                                   @Override
+                                   public int getItemViewType(int position) {
+                                       return position;
+                                   }
+
+                                   @Override
+                                   public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
+                                       final Holder myHolder = (Holder) viewHolder;
+                                       final JsonResItem model = imagelist.get(i);
+
+                                       final String[] spltext = model.getImageUrl().split("~");
+
+                                       if(!spltext[1].substring(0,3).equalsIgnoreCase("!@!")){
+                                           myHolder.anilbondename.setText(spltext[1]);
+                                       }else{
+                                           myHolder.anilbondename.setText("");
+                                       }
+
+                                       if(!spltext[2].substring(0,3).equalsIgnoreCase("!@!")){
+                                           myHolder.anilbondedesig.setText(spltext[2]);
+                                       }else{
+                                           myHolder.anilbondedesig.setText("");
+                                       }
+
+                                       if(!spltext[3].substring(0,3).equalsIgnoreCase("!@!")){
+                                           myHolder.uid.setText("phone number - "+spltext[3]);
+                                       }else{
+                                           myHolder.uid.setText("phone number - Not Present");
+                                       }
+
+                                       //myHolder.name.setText(Html.fromHtml("<font color='#FFFFFF' font-family='"+R.font.khandbold+"'>"+model.getName()+"</font>"));
+                                       Glide.with(MainActivity.this)
+                                               .load(model.getImageUrl())
+                                               .into(myHolder.anilbondepicture);
+
+                                       Glide.with(MainActivity.this)
+                                               .load(model.getBackground_image_url())
+                                               .into(myHolder.anilbondebackground);
+
+                                       myHolder.clickimage.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                                process(model.getId(), myHolder.linearLayout);
+                                           }
+                                       });
+
+                                       myHolder.whatsapp.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               File file = process(model.getId(), myHolder.linearLayout);
+                                               if(file != null){
+                                                   if(!spltext[3].substring(0,3).equalsIgnoreCase("!@!")){
+                                                       popup(MainActivity.this,spltext[3],file);
+                                                   }else{
+                                                       sentToWhatsapp(file);
+                                                   }
+                                               }
+                                           }
+                                       });
+                                   }
+
+                                   @Override
+                                   public int getItemCount() {
+                                       return imagelist.size();
+                                   }
+
+                                   class Holder extends RecyclerView.ViewHolder {
+                                       TextView uid;
+                                       ImageButton clickimage,whatsapp;
+                                       TextView anilbondename,anilbondedesig;
+                                       ImageView anilbondepicture,anilbondebackground;
+                                       private LinearLayout linearLayout;
+
+                                       public Holder(@NonNull View itemView) {
+                                           super(itemView);
+                                           uid = itemView.findViewById(R.id.uid);
+                                           clickimage = itemView.findViewById(R.id.clickimage);
+                                           whatsapp = itemView.findViewById(R.id.whatsapp);
+                                           anilbondedesig = itemView.findViewById(R.id.desig);
+                                           anilbondename = itemView.findViewById(R.id.name);
+                                           anilbondepicture = itemView.findViewById(R.id.picture);
+                                           anilbondebackground = itemView.findViewById(R.id.background);
+                                           linearLayout = itemView.findViewById(R.id.anilbonde);
+                                       }
+                                   }
+                               }
+        );
+    }
+
+    public void sentToWhatsapp(File imageurl){
+        Uri imgUri = Uri.parse(imageurl.getAbsolutePath());
+        //Uri imgUri = Uri.parse(pictureFile.getAbsolutePath());
+        Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+        whatsappIntent.setType("text/plain");
+        whatsappIntent.setPackage("com.whatsapp");
+        whatsappIntent.putExtra(Intent.EXTRA_TEXT, "Please post it on your Facebook Account and WhatsApp status.");
+        whatsappIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+        whatsappIntent.setType("image/jpeg");
+        whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        try {
+            startActivity(whatsappIntent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(MainActivity.this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void sentToWhatsappIndividual(String number, File imageurl){
+        Uri imgUri = Uri.parse(imageurl.getAbsolutePath());
+        //Uri imgUri = Uri.parse(pictureFile.getAbsolutePath());
+        Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+        whatsappIntent.setType("text/plain");
+        whatsappIntent.setPackage("com.whatsapp");
+        whatsappIntent.putExtra("jid", "91" +number+ "@s.whatsapp.net");
+        whatsappIntent.putExtra(Intent.EXTRA_TEXT, "Please post it on your Facebook Account and WhatsApp status.");
+        whatsappIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+        whatsappIntent.setType("image/jpeg");
+        whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        try {
+            startActivity(whatsappIntent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(MainActivity.this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void popup(final Context context, final String number, final File imageurl) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(true);
+        builder.setTitle("Alert");
+        builder.setMessage("Want to send image to whatsapp group or an individual");
+        builder.setPositiveButton("Group",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sentToWhatsapp(imageurl);
+                    }
+                });
+        builder.setNeutralButton("Individual",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sentToWhatsappIndividual(number, imageurl);
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

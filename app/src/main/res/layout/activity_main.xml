@@ -9,12 +9,12 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Process" />
+        android:text="Fetch Images" />
     <TextView
         android:id="@+id/text_view_countdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/lyt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,5 +57,9 @@
                     android:gravity="center"
                     android:textColor="#FFFFFF" />
             </RelativeLayout>
-    </LinearLayout>
+    </LinearLayout>-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imagelistad"/>
 </LinearLayout>

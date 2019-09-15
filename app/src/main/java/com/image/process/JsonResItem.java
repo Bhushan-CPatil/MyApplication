@@ -28,6 +28,17 @@ public class JsonResItem{
 	@SerializedName("status")
 	private String status;
 
+	@SerializedName("background_image_url")
+	private String background_image_url;
+
+	public String getBackground_image_url() {
+		return background_image_url;
+	}
+
+	public void setBackground_image_url(String background_image_url) {
+		this.background_image_url = background_image_url;
+	}
+
 	public void setSendFlag(String sendFlag){
 		this.sendFlag = sendFlag;
 	}
@@ -104,6 +115,7 @@ public class JsonResItem{
 			",designation = '" + designation + '\'' + 
 			",email = '" + email + '\'' + 
 			",status = '" + status + '\'' + 
+			",background_image_url = '" + background_image_url + '\'' +
 			"}";
 		}
 }
