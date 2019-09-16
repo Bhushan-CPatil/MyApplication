@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -149,8 +150,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
         private void callApi() {
+        String[] spldata = clientList.getSelectedItem().toString().trim().split("-");
+
         progress.show();
-        Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().getImagesList(selDate);
+        Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().getImagesList(selDate,spldata[1].trim());
         call.enqueue(new Callback<DefaultResponse>() {
             @Override
             public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
@@ -398,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
 
                                        myHolder.name.setText(model.getName());
                                        myHolder.desig.setText(model.getDesignation());
+                                       myHolder.uid.setText(model.getEmail());
                                        Glide.with(MainActivity.this)
                                                .load(model.getPersonImageUrl())
                                                .into(myHolder.picture);
@@ -405,6 +409,41 @@ public class MainActivity extends AppCompatActivity {
                                        Glide.with(MainActivity.this)
                                                .load(model.getPostImageUrl())
                                                .into(myHolder.background);
+
+                                       myHolder.clickimage.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               process(model.getId(), myHolder.linearLayout);
+                                           }
+                                       });
+
+                                       myHolder.whatsapp.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               File file = process(model.getId(), myHolder.linearLayout);
+                                               if(file != null){
+                                                   if(!model.getPhoneNumber().equalsIgnoreCase("")){
+                                                       popup(MainActivity.this,model.getPhoneNumber(),file);
+                                                   }else{
+                                                       sentToWhatsapp(file);
+                                                   }
+                                               }
+                                           }
+                                       });
+
+                                       myHolder.gmail.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               File file = process(model.getId(), myHolder.linearLayout);
+                                               if(file != null){
+                                                   if(!model.getEmail().equalsIgnoreCase("")){
+                                                       send_mail(model.getEmail(),file);
+                                                   }else{
+                                                       Toast.makeText(MainActivity.this, "Mail ID is empty", Toast.LENGTH_SHORT).show();
+                                                   }
+                                               }
+                                           }
+                                       });
 
                                        //ends here
 
@@ -466,7 +505,7 @@ public class MainActivity extends AppCompatActivity {
 
                                    class Holder extends RecyclerView.ViewHolder {
                                        TextView uid;
-                                       ImageButton clickimage,whatsapp;
+                                       ImageButton clickimage,whatsapp,gmail,delete;
                                        //anil bonde
                                        TextView name,desig;
                                        ImageView picture,background;
@@ -488,6 +527,8 @@ public class MainActivity extends AppCompatActivity {
                                            background = itemView.findViewById(R.id.background);
                                            linearLayout = itemView.findViewById(R.id.anilbonde);
                                            lpic = itemView.findViewById(R.id.lpic);
+                                           gmail = itemView.findViewById(R.id.gmail);
+                                           delete = itemView.findViewById(R.id.delete);
                                            //vijay nahata
                                            /*vijaynahataname = itemView.findViewById(R.id.vijaynahataname);
                                            vijaynahatapicture = itemView.findViewById(R.id.vijaynahatapicture);
@@ -588,5 +629,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void send_mail(String mailid, File pic){
+        /*Intent i = new Intent(Intent.ACTION_SEND);
+        i.putExtra(Intent.EXTRA_EMAIL, new String[]{mailid});
+        i.putExtra(Intent.EXTRA_SUBJECT,"Samarthak Image");
+        i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(pic));
+        i.setType("image/png");
+        startActivity(Intent.createChooser(i,"Send via...."));*/
+
+        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+        emailIntent.setType("application/image");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{mailid});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,"Test Subject");
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "From My App");
+        emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+pic.getAbsolutePath()));
+        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 }

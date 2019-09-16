@@ -11,7 +11,8 @@ public interface Api {
     @FormUrlEncoded
     @POST("fetch_images_new.php")
     Call<DefaultResponse> getImagesList(
-            @Field("postdate") String postdate
+            @Field("postdate") String postdate,
+            @Field("clientcd") String clientcd
     );
 
     @GET("client_list.php")

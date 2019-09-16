@@ -11,23 +11,33 @@
         android:layout_height="match_parent"
         android:padding="8dp"
         android:weightSum="10"
+        android:background="#535353"
         android:orientation="horizontal"
         >
 
-
         <TextView
             android:id="@+id/uid"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="8"
+            android:layout_weight="6"
             android:layout_gravity="center"
-            android:textColor="#535353"
+            android:textColor="#FFFFFF"
             android:singleLine="true"
             android:ellipsize="end"
             android:textSize="15sp"/>
 
         <ImageButton
-            android:layout_width="30dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/gmail"
+            android:backgroundTint="#00000000"
+            android:src="@drawable/ic_gmail"/>
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="30dp"
             android:layout_marginRight="10dp"
             android:id="@+id/whatsapp"
@@ -35,12 +45,22 @@
             android:src="@drawable/ic_whatsapp"/>
 
         <ImageButton
-            android:layout_width="30dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="30dp"
             android:layout_marginRight="10dp"
             android:id="@+id/clickimage"
             android:backgroundTint="#00000000"
             android:src="@drawable/ic_file_download"/>
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/delete"
+            android:backgroundTint="#00000000"
+            android:src="@drawable/ic_delete"/>
 
     </LinearLayout>
 
