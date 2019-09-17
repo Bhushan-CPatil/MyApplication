@@ -151,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
 
         private void callApi() {
         String[] spldata = clientList.getSelectedItem().toString().trim().split("-");
-
+            imagelist.clear();
+            imagelistad.getAdapter().notifyDataSetChanged();
         progress.show();
         Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().getImagesList(selDate,spldata[1].trim());
         call.enqueue(new Callback<DefaultResponse>() {
