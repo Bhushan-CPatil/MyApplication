@@ -5,15 +5,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     AppCompatSpinner clientList;
     String selDate;
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +152,19 @@ public class MainActivity extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
+
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int writepermission = ContextCompat.
+                checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (writepermission != PackageManager.PERMISSION_GRANTED)
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (!listPermissionsNeeded.isEmpty()) {
+
+            ActivityCompat.requestPermissions(this,
+                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),
+                    REQUEST_ID_MULTIPLE_PERMISSIONS);
+        }
 
         getClientName();
     }
@@ -683,4 +701,6 @@ public class MainActivity extends AppCompatActivity {
         whatsappIntent.setType("image/jpeg");
         whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);*/
     }
+
+
 }
