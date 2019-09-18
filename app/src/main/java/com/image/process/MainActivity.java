@@ -67,7 +67,7 @@ import static java.lang.Thread.sleep;
 public class MainActivity extends AppCompatActivity {
 
     //private LinearLayout linearLayout;
-    private Button saveBtn,clickImage;
+    private Button saveBtn,clickImage,button2;
     ViewDialog progress;
     public List<JsonResItem> imagelist = new ArrayList<>();
     public List<ClientItem> clientListArray = new ArrayList<>();
@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         //clickImage = findViewById(R.id.clickImage);
         mTextViewCountDown = findViewById(R.id.text_view_countdown);
         clientList = findViewById(R.id.clientList);
+        button2 = findViewById(R.id.button2);
         date = findViewById(R.id.date);
         String cdate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         selDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -108,6 +109,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 callApi();
+            }
+        });
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recreate();
             }
         });
         /*clickImage.setOnClickListener(new View.OnClickListener() {
@@ -440,6 +447,7 @@ public class MainActivity extends AppCompatActivity {
                                                    if(!model.getEmail().equalsIgnoreCase("")){
                                                        send_mail(model.getEmail(),file);
                                                    }else{
+                                                       //send_mail(model.getEmail(),file);
                                                        Toast.makeText(MainActivity.this, "Mail ID is empty", Toast.LENGTH_SHORT).show();
                                                    }
                                                }
@@ -640,12 +648,33 @@ public class MainActivity extends AppCompatActivity {
         i.setType("image/png");
         startActivity(Intent.createChooser(i,"Send via...."));*/
 
-        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+        /*Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
         emailIntent.setType("application/image");
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{mailid});
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,"Test Subject");
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "From My App");
         emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+pic.getAbsolutePath()));
-        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        startActivity(Intent.createChooser(emailIntent, "Send mail..."));*/
+        Uri imgUri = Uri.parse(pic.getAbsolutePath());
+        Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+        whatsappIntent.setType("text/plain");
+        whatsappIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"pbhushan246@gmail.com"});
+        whatsappIntent.putExtra(Intent.EXTRA_SUBJECT,"Samarthak Image");
+        whatsappIntent.putExtra(Intent.EXTRA_TEXT, "Please post it on your Facebook Account and WhatsApp status.");
+        whatsappIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+        whatsappIntent.setType("image/jpeg");
+        whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            startActivity(Intent.createChooser(whatsappIntent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(MainActivity.this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
+        }
+        /*Bitmap image = getBitmapFromURL(APIs.Dp + finalImageArray1[0]);
+        whatsappIntent.setType("text/plain");
+        whatsappIntent
+        whatsappIntent.putExtra(Intent.EXTRA_TEXT, "NAME :" + item.getProductName() + "\n\n" + "Description :" + item.getProductDesc() + "\n\n" + "Price : ₹" + item.getProductPrice() + "\n\n" + APIs.Domain + "productpage&id=" + item.getId());
+        whatsappIntent.putExtra(Intent.EXTRA_STREAM, getImageUri(context, image));
+        whatsappIntent.setType("image/jpeg");
+        whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);*/
     }
 }

@@ -11,7 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    public static final String BASE_URL = "http://192.168.1.41:8080/ImageBiulderApi/";
+    //public static final String BASE_URL = "http://192.168.1.41:8080/ImageBiulderApi/";
+    public static final String BASE_URL = "http://192.168.1.11:8080/SamarthakImageProcessing/ImageBiulderApi/";
 
     // Directory name to store captured images and videos
     public static final String IMAGE_DIRECTORY_NAME = "Android File Upload";

@@ -88,12 +88,12 @@
                     android:id="@+id/picture"
                     android:layout_width="107dp"
                     android:layout_height="152dp"
-                    android:scaleType="fitXY"/>
+                    android:scaleType="centerCrop"/>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/name"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
@@ -102,7 +102,7 @@
 
             <TextView
                 android:id="@+id/desig"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
