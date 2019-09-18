@@ -390,6 +390,9 @@ public class MainActivity extends AppCompatActivity {
                                        if(model.getNameFontFam().equalsIgnoreCase("khandbold")){
                                            Typeface typeface = ResourcesCompat.getFont(MainActivity.this, R.font.khandbold);
                                            myHolder.name.setTypeface(typeface);
+                                       }else if(model.getNameFontFam().equalsIgnoreCase("BalBharatiDev")){
+                                           Typeface typeface = ResourcesCompat.getFont(MainActivity.this, R.font.balbharatidev);
+                                           myHolder.name.setTypeface(typeface);
                                        }
 
                                        ViewGroup.MarginLayoutParams layoutParams3 = (ViewGroup.MarginLayoutParams) myHolder.desig.getLayoutParams();
@@ -400,6 +403,9 @@ public class MainActivity extends AppCompatActivity {
                                        if(model.getDesigFontFam().equalsIgnoreCase("khandbold")){
                                            Typeface typeface = ResourcesCompat.getFont(MainActivity.this, R.font.khandbold);
                                            myHolder.desig.setTypeface(typeface);
+                                       }else if(model.getDesigFontFam().equalsIgnoreCase("BalBharatiDev")){
+                                           Typeface typeface = ResourcesCompat.getFont(MainActivity.this, R.font.balbharatidev);
+                                           myHolder.name.setTypeface(typeface);
                                        }
 
                                        ViewGroup.LayoutParams params = myHolder.picture.getLayoutParams();
