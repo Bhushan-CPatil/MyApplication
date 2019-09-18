@@ -469,7 +469,8 @@ public class MainActivity extends AppCompatActivity {
                                                File file = process(model.getId(), myHolder.linearLayout);
                                                if(file != null){
                                                    if(!model.getEmail().equalsIgnoreCase("")){
-                                                       send_mail(model.getEmail(),file);
+                                                       //send_mail(model.getEmail(),file);
+                                                       Toast.makeText(MainActivity.this, "This feature is under development !", Toast.LENGTH_SHORT).show();
                                                    }else{
                                                        //send_mail(model.getEmail(),file);
                                                        Toast.makeText(MainActivity.this, "Mail ID is empty", Toast.LENGTH_SHORT).show();
@@ -561,7 +562,7 @@ public class MainActivity extends AppCompatActivity {
                                            linearLayout = itemView.findViewById(R.id.anilbonde);
                                            lpic = itemView.findViewById(R.id.lpic);
                                            gmail = itemView.findViewById(R.id.gmail);
-                                           delete = itemView.findViewById(R.id.delete);
+                                           //delete = itemView.findViewById(R.id.delete);
                                            //vijay nahata
                                            /*vijaynahataname = itemView.findViewById(R.id.vijaynahataname);
                                            vijaynahatapicture = itemView.findViewById(R.id.vijaynahatapicture);

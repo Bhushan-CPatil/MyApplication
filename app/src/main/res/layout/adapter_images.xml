@@ -19,7 +19,7 @@
             android:id="@+id/uid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
+            android:layout_weight="7"
             android:layout_gravity="center"
             android:textColor="#FFFFFF"
             android:singleLine="true"
@@ -53,14 +53,14 @@
             android:backgroundTint="#00000000"
             android:src="@drawable/ic_file_download"/>
 
-        <ImageButton
+       <!-- <ImageButton
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="30dp"
             android:layout_marginRight="10dp"
             android:id="@+id/delete"
             android:backgroundTint="#00000000"
-            android:src="@drawable/ic_delete"/>
+            android:src="@drawable/ic_delete"/>-->
 
     </LinearLayout>
 
