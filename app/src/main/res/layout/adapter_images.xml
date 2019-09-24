@@ -26,14 +26,14 @@
             android:ellipsize="end"
             android:textSize="15sp"/>
 
-        <ImageButton
+        <!--<ImageButton
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="30dp"
             android:layout_marginRight="10dp"
             android:id="@+id/gmail"
             android:backgroundTint="#00000000"
-            android:src="@drawable/ic_gmail"/>
+            android:src="@drawable/ic_gmail"/>-->
 
         <ImageButton
             android:layout_width="0dp"
@@ -53,14 +53,14 @@
             android:backgroundTint="#00000000"
             android:src="@drawable/ic_file_download"/>
 
-       <!-- <ImageButton
+        <ImageButton
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="30dp"
             android:layout_marginRight="10dp"
             android:id="@+id/delete"
             android:backgroundTint="#00000000"
-            android:src="@drawable/ic_delete"/>-->
+            android:src="@drawable/ic_delete"/>
 
     </LinearLayout>
 

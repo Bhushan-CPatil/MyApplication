@@ -15,6 +15,14 @@ public interface Api {
             @Field("clientcd") String clientcd
     );
 
+    @FormUrlEncoded
+    @POST("deletesamarthak.php")
+    Call<DefaultResponse> getImagesListAferDelete(
+            @Field("postdate") String postdate,
+            @Field("clientcd") String clientcd,
+            @Field("samarthak_id") String samarthak_id
+    );
+
     @GET("client_list.php")
     Call<ClientResponse> getClientNames();
 }

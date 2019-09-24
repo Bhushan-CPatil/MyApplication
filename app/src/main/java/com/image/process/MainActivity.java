@@ -1,19 +1,8 @@
 package com.image.process;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,7 +18,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
-import android.text.Html;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -44,14 +33,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -60,13 +54,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static java.lang.Thread.sleep;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -411,6 +402,9 @@ public class MainActivity extends AppCompatActivity {
                                        }else if(model.getNameFontFam().equalsIgnoreCase("BalBharatiDev")){
                                            Typeface typeface = ResourcesCompat.getFont(MainActivity.this, R.font.balbharatidev);
                                            myHolder.name.setTypeface(typeface);
+                                       }else if(model.getNameFontFam().equalsIgnoreCase("utsaahb")){
+                                           Typeface typeface = ResourcesCompat.getFont(MainActivity.this, R.font.utsaahb);
+                                           myHolder.name.setTypeface(typeface);
                                        }
 
                                        ViewGroup.MarginLayoutParams layoutParams3 = (ViewGroup.MarginLayoutParams) myHolder.desig.getLayoutParams();
@@ -423,7 +417,10 @@ public class MainActivity extends AppCompatActivity {
                                            myHolder.desig.setTypeface(typeface);
                                        }else if(model.getDesigFontFam().equalsIgnoreCase("BalBharatiDev")){
                                            Typeface typeface = ResourcesCompat.getFont(MainActivity.this, R.font.balbharatidev);
-                                           myHolder.name.setTypeface(typeface);
+                                           myHolder.desig.setTypeface(typeface);
+                                       }else if(model.getNameFontFam().equalsIgnoreCase("utsaahb")){
+                                           Typeface typeface = ResourcesCompat.getFont(MainActivity.this, R.font.utsaahb);
+                                           myHolder.desig.setTypeface(typeface);
                                        }
 
                                        ViewGroup.LayoutParams params = myHolder.picture.getLayoutParams();
@@ -433,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
 
                                        myHolder.name.setText(model.getName());
                                        myHolder.desig.setText(model.getDesignation());
-                                       myHolder.uid.setText(model.getEmail());
+                                       myHolder.uid.setText(model.getPhoneNumber());
                                        Glide.with(MainActivity.this)
                                                .load(model.getPersonImageUrl())
                                                .into(myHolder.picture);
@@ -446,6 +443,20 @@ public class MainActivity extends AppCompatActivity {
                                            @Override
                                            public void onClick(View v) {
                                                process(model.getId(), myHolder.linearLayout);
+                                           }
+                                       });
+
+                                       myHolder.uid.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View view) {
+                                               File file = process(model.getId(), myHolder.linearLayout);
+                                               if(file != null){
+                                                   if(!model.getPhoneNumber().equalsIgnoreCase("")){
+                                                       checkWhatsApp(model.getPhoneNumber(),file);
+                                                   }else{
+                                                       sentToWhatsapp(file);
+                                                   }
+                                               }
                                            }
                                        });
 
@@ -463,7 +474,7 @@ public class MainActivity extends AppCompatActivity {
                                            }
                                        });
 
-                                       myHolder.gmail.setOnClickListener(new View.OnClickListener() {
+                                       /*myHolder.gmail.setOnClickListener(new View.OnClickListener() {
                                            @Override
                                            public void onClick(View v) {
                                                File file = process(model.getId(), myHolder.linearLayout);
@@ -476,6 +487,13 @@ public class MainActivity extends AppCompatActivity {
                                                        Toast.makeText(MainActivity.this, "Mail ID is empty", Toast.LENGTH_SHORT).show();
                                                    }
                                                }
+                                           }
+                                       });*/
+
+                                       myHolder.delete.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               deleteApi(model.getId(),model.getBannerDate(),model.getClientCd());
                                            }
                                        });
 
@@ -561,8 +579,8 @@ public class MainActivity extends AppCompatActivity {
                                            background = itemView.findViewById(R.id.background);
                                            linearLayout = itemView.findViewById(R.id.anilbonde);
                                            lpic = itemView.findViewById(R.id.lpic);
-                                           gmail = itemView.findViewById(R.id.gmail);
-                                           //delete = itemView.findViewById(R.id.delete);
+                                           //gmail = itemView.findViewById(R.id.gmail);
+                                           delete = itemView.findViewById(R.id.delete);
                                            //vijay nahata
                                            /*vijaynahataname = itemView.findViewById(R.id.vijaynahataname);
                                            vijaynahatapicture = itemView.findViewById(R.id.vijaynahatapicture);
@@ -572,6 +590,37 @@ public class MainActivity extends AppCompatActivity {
                                    }
                                }
         );
+    }
+
+    private void deleteApi(String id, String bannerDate, String clientCd) {
+        imagelist.clear();
+        imagelistad.getAdapter().notifyDataSetChanged();
+        progress.show();
+        Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().getImagesListAferDelete(bannerDate,clientCd.trim(),id);
+        call.enqueue(new Callback<DefaultResponse>() {
+            @Override
+            public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                DefaultResponse res = response.body();
+                progress.dismiss();
+                if(!res.isError()){
+                    imagelist = res.getJsonRes();
+                    imagelistad.getAdapter().notifyDataSetChanged();
+                }else{
+                    progress.dismiss();
+                    Toast.makeText(MainActivity.this, "List is empty", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                progress.dismiss();
+                if (t instanceof IOException) {
+                    Toast.makeText(MainActivity.this, "Internet Issue ! Failed to process your request !", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Data Conversion Issue ! Contact to admin", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public void sentToWhatsapp(File imageurl){
@@ -592,24 +641,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void sentToWhatsappIndividual(String number, File imageurl){
-        Uri imgUri = Uri.parse(imageurl.getAbsolutePath());
-        //Uri imgUri = Uri.parse(pictureFile.getAbsolutePath());
-        Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
-        whatsappIntent.setType("text/plain");
-        whatsappIntent.setPackage("com.whatsapp");
-        whatsappIntent.putExtra("jid", "91" +number+ "@s.whatsapp.net");
-        whatsappIntent.putExtra(Intent.EXTRA_TEXT, "Please post it on your Facebook Account and WhatsApp status.");
-        whatsappIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
-        whatsappIntent.setType("image/jpeg");
-        whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        try {
-            startActivity(whatsappIntent);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(MainActivity.this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
-        }
-    }
     public void popup(final Context context, final String number, final File imageurl) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(true);
@@ -626,7 +658,12 @@ public class MainActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        sentToWhatsappIndividual(number, imageurl);
+                        //if(number.length() == 10){
+                            openWhatsApp(number, imageurl);
+                        //}else{
+                        //    sentToWhatsappIndividual(number, imageurl);
+                        //}
+                        //sentToWhatsappIndividual(number, imageurl);
                     }
                 });
         AlertDialog dialog = builder.create();
@@ -703,5 +740,96 @@ public class MainActivity extends AppCompatActivity {
         whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);*/
     }
 
+    public void sentToWhatsappIndividual(String number, File imageurl){
+        Uri imgUri = Uri.parse(imageurl.getAbsolutePath());
+        //Uri imgUri = Uri.parse(pictureFile.getAbsolutePath());
+        Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+        whatsappIntent.setType("text/plain");
+        whatsappIntent.setPackage("com.whatsapp");
+        whatsappIntent.putExtra("jid", "91" +number+ "@s.whatsapp.net");
+        whatsappIntent.putExtra(Intent.EXTRA_TEXT, "Please post it on your Facebook Account and WhatsApp status.");
+        whatsappIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+        whatsappIntent.setType("image/jpeg");
+        whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        try {
+            startActivity(whatsappIntent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(MainActivity.this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openWhatsApp(String number, File imageurl) {
+        Uri imgUri = Uri.parse(imageurl.getAbsolutePath());
+        String smsNumber = "91"+number;
+        boolean isWhatsappInstalled = whatsappInstalledOrNot("com.whatsapp");
+        if (isWhatsappInstalled) {
+            /*Intent sendIntent = new Intent("android.intent.action.MAIN");
+
+            sendIntent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.Conversation"));
+            //sendIntent.setPackage("com.whatsapp");
+            sendIntent.putExtra("jid", PhoneNumberUtils.stripSeparators(smsNumber) + "@s.whatsapp.net");
+            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Please post it on your Facebook Account and WhatsApp status.");
+            sendIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+            sendIntent.setType("image/jpeg");
+            sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(sendIntent);*/
+
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+
+            sendIntent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.ContactPicker"));//"com.whatsapp.Conversation"
+            //sendIntent.setPackage("com.whatsapp");
+            sendIntent.setType("image/*");
+            sendIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+            sendIntent.putExtra("jid", PhoneNumberUtils.stripSeparators(smsNumber) + "@s.whatsapp.net");
+            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Please post it on your Facebook Account and WhatsApp status.");
+            sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(sendIntent);
+        } else {
+            Uri uri = Uri.parse("market://details?id=com.whatsapp");
+            Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+            Toast.makeText(this, "WhatsApp not Installed",
+                    Toast.LENGTH_SHORT).show();
+            startActivity(goToMarket);
+        }
+    }
+
+    private void checkWhatsApp(String number, File imageurl) {
+        Uri imgUri = Uri.parse(imageurl.getAbsolutePath());
+        String smsNumber = "91"+number;
+        boolean isWhatsappInstalled = whatsappInstalledOrNot("com.whatsapp");
+        if (isWhatsappInstalled) {
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.Conversation"));//"com.whatsapp.Conversation"
+            //sendIntent.setPackage("com.whatsapp");
+            sendIntent.setType("image/*");
+            sendIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+            sendIntent.putExtra("jid", PhoneNumberUtils.stripSeparators(smsNumber) + "@s.whatsapp.net");
+            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Please post it on your Facebook Account and WhatsApp status.");
+            sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(sendIntent);
+        } else {
+            Uri uri = Uri.parse("market://details?id=com.whatsapp");
+            Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+            Toast.makeText(this, "WhatsApp not Installed",
+                    Toast.LENGTH_SHORT).show();
+            startActivity(goToMarket);
+        }
+    }
+
+    private boolean whatsappInstalledOrNot(String uri) {
+        PackageManager pm = getPackageManager();
+        boolean app_installed = false;
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
+    }
 
 }

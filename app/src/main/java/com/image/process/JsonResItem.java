@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class JsonResItem{
 
+	@SerializedName("bannerDate")
+	private String bannerDate;
+
 	@SerializedName("ImageW")
 	private String imageW;
 
@@ -13,17 +16,23 @@ public class JsonResItem{
 	@SerializedName("NameFontSize")
 	private String nameFontSize;
 
+	@SerializedName("client_Name")
+	private String clientName;
+
 	@SerializedName("DesigFontC")
 	private String desigFontC;
 
 	@SerializedName("DesigFontSize")
 	private String desigFontSize;
 
+	@SerializedName("client_id")
+	private String clientId;
+
+	@SerializedName("samarthak_id")
+	private Object samarthakId;
+
 	@SerializedName("post_bg_id")
 	private String postBgId;
-
-	@SerializedName("post_back_image")
-	private String postBackImage;
 
 	@SerializedName("ImageH")
 	private String imageH;
@@ -49,6 +58,15 @@ public class JsonResItem{
 	@SerializedName("DesigFontFam")
 	private String desigFontFam;
 
+	@SerializedName("sent_id")
+	private Object sentId;
+
+	@SerializedName("sent_date")
+	private Object sentDate;
+
+	@SerializedName("bannerName")
+	private String bannerName;
+
 	@SerializedName("DesigMT")
 	private String desigMT;
 
@@ -64,6 +82,9 @@ public class JsonResItem{
 	@SerializedName("NameFontC")
 	private String nameFontC;
 
+	@SerializedName("client_Cd")
+	private String clientCd;
+
 	@SerializedName("post_date")
 	private String postDate;
 
@@ -78,6 +99,17 @@ public class JsonResItem{
 
 	@SerializedName("designation")
 	private String designation;
+
+	@SerializedName("cid")
+	private String cid;
+
+	public void setBannerDate(String bannerDate){
+		this.bannerDate = bannerDate;
+	}
+
+	public String getBannerDate(){
+		return bannerDate;
+	}
 
 	public void setImageW(String imageW){
 		this.imageW = imageW;
@@ -103,6 +135,14 @@ public class JsonResItem{
 		return nameFontSize;
 	}
 
+	public void setClientName(String clientName){
+		this.clientName = clientName;
+	}
+
+	public String getClientName(){
+		return clientName;
+	}
+
 	public void setDesigFontC(String desigFontC){
 		this.desigFontC = desigFontC;
 	}
@@ -119,20 +159,28 @@ public class JsonResItem{
 		return desigFontSize;
 	}
 
+	public void setClientId(String clientId){
+		this.clientId = clientId;
+	}
+
+	public String getClientId(){
+		return clientId;
+	}
+
+	public void setSamarthakId(Object samarthakId){
+		this.samarthakId = samarthakId;
+	}
+
+	public Object getSamarthakId(){
+		return samarthakId;
+	}
+
 	public void setPostBgId(String postBgId){
 		this.postBgId = postBgId;
 	}
 
 	public String getPostBgId(){
 		return postBgId;
-	}
-
-	public void setPostBackImage(String postBackImage){
-		this.postBackImage = postBackImage;
-	}
-
-	public String getPostBackImage(){
-		return postBackImage;
 	}
 
 	public void setImageH(String imageH){
@@ -199,6 +247,30 @@ public class JsonResItem{
 		return desigFontFam;
 	}
 
+	public void setSentId(Object sentId){
+		this.sentId = sentId;
+	}
+
+	public Object getSentId(){
+		return sentId;
+	}
+
+	public void setSentDate(Object sentDate){
+		this.sentDate = sentDate;
+	}
+
+	public Object getSentDate(){
+		return sentDate;
+	}
+
+	public void setBannerName(String bannerName){
+		this.bannerName = bannerName;
+	}
+
+	public String getBannerName(){
+		return bannerName;
+	}
+
 	public void setDesigMT(String desigMT){
 		this.desigMT = desigMT;
 	}
@@ -237,6 +309,14 @@ public class JsonResItem{
 
 	public String getNameFontC(){
 		return nameFontC;
+	}
+
+	public void setClientCd(String clientCd){
+		this.clientCd = clientCd;
+	}
+
+	public String getClientCd(){
+		return clientCd;
 	}
 
 	public void setPostDate(String postDate){
@@ -279,17 +359,28 @@ public class JsonResItem{
 		return designation;
 	}
 
+	public void setCid(String cid){
+		this.cid = cid;
+	}
+
+	public String getCid(){
+		return cid;
+	}
+
 	@Override
  	public String toString(){
 		return 
 			"JsonResItem{" + 
-			"imageW = '" + imageW + '\'' + 
+			"bannerDate = '" + bannerDate + '\'' + 
+			",imageW = '" + imageW + '\'' + 
 			",nameFontFam = '" + nameFontFam + '\'' + 
 			",nameFontSize = '" + nameFontSize + '\'' + 
+			",client_Name = '" + clientName + '\'' + 
 			",desigFontC = '" + desigFontC + '\'' + 
 			",desigFontSize = '" + desigFontSize + '\'' + 
+			",client_id = '" + clientId + '\'' + 
+			",samarthak_id = '" + samarthakId + '\'' + 
 			",post_bg_id = '" + postBgId + '\'' + 
-			",post_back_image = '" + postBackImage + '\'' + 
 			",imageH = '" + imageH + '\'' + 
 			",linearMT = '" + linearMT + '\'' + 
 			",linearMS = '" + linearMS + '\'' + 
@@ -298,16 +389,21 @@ public class JsonResItem{
 			",id = '" + id + '\'' + 
 			",email = '" + email + '\'' + 
 			",desigFontFam = '" + desigFontFam + '\'' + 
+			",sent_id = '" + sentId + '\'' + 
+			",sent_date = '" + sentDate + '\'' + 
+			",bannerName = '" + bannerName + '\'' + 
 			",desigMT = '" + desigMT + '\'' + 
 			",nameMT = '" + nameMT + '\'' + 
 			",desigMS = '" + desigMS + '\'' + 
 			",nameMS = '" + nameMS + '\'' + 
 			",nameFontC = '" + nameFontC + '\'' + 
+			",client_Cd = '" + clientCd + '\'' + 
 			",post_date = '" + postDate + '\'' + 
 			",name = '" + name + '\'' + 
 			",phone_number = '" + phoneNumber + '\'' + 
 			",image_status = '" + imageStatus + '\'' + 
 			",designation = '" + designation + '\'' + 
+			",cid = '" + cid + '\'' + 
 			"}";
 		}
 }
