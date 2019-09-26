@@ -96,7 +96,19 @@
     </LinearLayout>
 
 </LinearLayout>
-
+    <EditText
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:ems="10"
+        android:layout_margin="9dp"
+        android:hint="Search Name"
+        android:drawableRight="@drawable/search"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/btnasc_count"
+        android:layout_toLeftOf="@+id/btnasc_count" />
     <TextView
         android:id="@+id/text_view_countdown"
         android:layout_width="wrap_content"

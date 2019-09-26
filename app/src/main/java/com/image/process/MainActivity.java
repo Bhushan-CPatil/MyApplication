@@ -19,6 +19,8 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.telephony.PhoneNumberUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     ViewDialog progress;
     public List<JsonResItem> imagelist = new ArrayList<>();
     public List<ClientItem> clientListArray = new ArrayList<>();
+    EditText search;
     //ImageView picture;
     //TextView name,desig;
     ArrayList<String> imageUrl =new ArrayList<String>();
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean mTimerRunning;
     private long mTimeLeftInMillis;
     private CountDownTimer mCountDownTimer;
+    public AdapterSearch mAdapter;
     TextView mTextViewCountDown,date;
     RecyclerView imagelistad;
     DatePickerDialog datePickerDialog;
@@ -90,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         mTextViewCountDown = findViewById(R.id.text_view_countdown);
         clientList = findViewById(R.id.clientList);
         button2 = findViewById(R.id.button2);
+        search = findViewById(R.id.search);
         date = findViewById(R.id.date);
         String cdate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         selDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -100,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         //desig = findViewById(R.id.desig);
         progress = new ViewDialog(this);
         handler = new Handler();
-        setDocLstAdapter();
+        //setDocLstAdapter();
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -158,6 +164,32 @@ public class MainActivity extends AppCompatActivity {
         }
 
         getClientName();
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                try {
+                    String textsearch = search.getText().toString().trim();
+                    if (textsearch.length() > 0) {
+                        mAdapter.getFilter().filter(textsearch);
+                    } else {
+                        mAdapter.getFilter().filter(textsearch);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void showOrder(final String id) {
@@ -168,6 +200,10 @@ public class MainActivity extends AppCompatActivity {
         private void callApi() {
         String[] spldata = clientList.getSelectedItem().toString().trim().split("-");
             imagelist.clear();
+            mAdapter = new AdapterSearch(imagelist,MainActivity.this);
+            imagelistad.setNestedScrollingEnabled(false);
+            imagelistad.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            imagelistad.setAdapter(mAdapter);
             imagelistad.getAdapter().notifyDataSetChanged();
         progress.show();
         Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().getImagesList(selDate,spldata[1].trim());
@@ -178,6 +214,11 @@ public class MainActivity extends AppCompatActivity {
                 progress.dismiss();
                 if(!res.isError()){
                     imagelist = res.getJsonRes();
+
+                    mAdapter = new AdapterSearch(imagelist,MainActivity.this);
+                    imagelistad.setNestedScrollingEnabled(false);
+                    imagelistad.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    imagelistad.setAdapter(mAdapter);
                     imagelistad.getAdapter().notifyDataSetChanged();
                     /*for (int i = 0 ; i < imagelist.size() ; i++){
                         final int finalI = i;
@@ -592,7 +633,7 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    private void deleteApi(String id, String bannerDate, String clientCd) {
+    public void deleteApi(String id, String bannerDate, String clientCd) {
         imagelist.clear();
         imagelistad.getAdapter().notifyDataSetChanged();
         progress.show();
@@ -796,7 +837,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void checkWhatsApp(String number, File imageurl) {
+    public void checkWhatsApp(String number, File imageurl) {
         Uri imgUri = Uri.parse(imageurl.getAbsolutePath());
         String smsNumber = "91"+number;
         boolean isWhatsappInstalled = whatsappInstalledOrNot("com.whatsapp");
