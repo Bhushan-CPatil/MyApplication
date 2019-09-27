@@ -126,19 +126,19 @@ public class AdapterSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         myHolder.clickimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MainActivity().process(model.getId(), myHolder.linearLayout);
+                new MainActivity().process(mycontext,model.getId(), myHolder.linearLayout);
             }
         });
 
         myHolder.uid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File file = new MainActivity().process(model.getId(), myHolder.linearLayout);
+                File file = new MainActivity().process(mycontext,model.getId(), myHolder.linearLayout);
                 if(file != null){
                     if(!model.getPhoneNumber().equalsIgnoreCase("")){
-                        new MainActivity().checkWhatsApp(model.getPhoneNumber(),file);
+                        new MainActivity().checkWhatsApp(mycontext,model.getPhoneNumber(),file);
                     }else{
-                        new MainActivity().sentToWhatsapp(file);
+                        new MainActivity().sentToWhatsapp(mycontext,file);
                     }
                 }
             }
@@ -147,12 +147,12 @@ public class AdapterSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         myHolder.whatsapp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File file = new MainActivity().process(model.getId(), myHolder.linearLayout);
+                File file = new MainActivity().process(mycontext,model.getId(), myHolder.linearLayout);
                 if(file != null){
                     if(!model.getPhoneNumber().equalsIgnoreCase("")){
                         new MainActivity().popup(mycontext,model.getPhoneNumber(),file);
                     }else{
-                        new MainActivity().sentToWhatsapp(file);
+                        new MainActivity().sentToWhatsapp(mycontext,file);
                     }
                 }
             }
@@ -163,7 +163,7 @@ public class AdapterSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         myHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MainActivity().deleteApi(model.getId(),model.getBannerDate(),model.getClientCd());
+                new MainActivity().deleteApi(mycontext,model.getId(),model.getBannerDate(),model.getClientCd());
             }
         });
 

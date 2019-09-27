@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                new MyApplication(MainActivity.this);
                 recreate();
             }
         });
@@ -292,8 +293,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public File process(String id, LinearLayout linearLayout) {
-            File file = saveBitMap(MainActivity.this, linearLayout, id, linearLayout);    //which view you want to pass that view as parameter
+    public File process(Context mycontext,String id, LinearLayout linearLayout) {
+            File file = saveBitMap(mycontext, linearLayout, id, linearLayout);    //which view you want to pass that view as parameter
             if (file != null) {
                 Log.i("TAG", "Drawing saved to the gallery!");
                 return file;
@@ -390,7 +391,7 @@ public class MainActivity extends AppCompatActivity {
         mTextViewCountDown.setText(timeLeftFormatted);
     }
 
-    public void setDocLstAdapter() {
+    /*public void setDocLstAdapter() {
         imagelistad.setNestedScrollingEnabled(false);
         imagelistad.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         imagelistad.setAdapter(new RecyclerView.Adapter() {
@@ -515,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
                                            }
                                        });
 
-                                       /*myHolder.gmail.setOnClickListener(new View.OnClickListener() {
+                                       *//*myHolder.gmail.setOnClickListener(new View.OnClickListener() {
                                            @Override
                                            public void onClick(View v) {
                                                File file = process(model.getId(), myHolder.linearLayout);
@@ -529,7 +530,7 @@ public class MainActivity extends AppCompatActivity {
                                                    }
                                                }
                                            }
-                                       });*/
+                                       });*//*
 
                                        myHolder.delete.setOnClickListener(new View.OnClickListener() {
                                            @Override
@@ -540,7 +541,7 @@ public class MainActivity extends AppCompatActivity {
 
                                        //ends here
 
-                                       /*final String[] spltext = model.getImageUrl().split("~");
+                                       *//*final String[] spltext = model.getImageUrl().split("~");
 
                                        if(!spltext[1].substring(0,3).equalsIgnoreCase("!@!")){
                                            myHolder.anilbondename.setText(spltext[1]);
@@ -588,7 +589,7 @@ public class MainActivity extends AppCompatActivity {
                                                    }
                                                }
                                            }
-                                       });*/
+                                       });*//*
                                    }
 
                                    @Override
@@ -623,18 +624,22 @@ public class MainActivity extends AppCompatActivity {
                                            //gmail = itemView.findViewById(R.id.gmail);
                                            delete = itemView.findViewById(R.id.delete);
                                            //vijay nahata
-                                           /*vijaynahataname = itemView.findViewById(R.id.vijaynahataname);
+                                           *//*vijaynahataname = itemView.findViewById(R.id.vijaynahataname);
                                            vijaynahatapicture = itemView.findViewById(R.id.vijaynahatapicture);
                                            vijaynahatabackground = itemView.findViewById(R.id.vijaynahatabackground);
-                                           vijaynahatalinlay = itemView.findViewById(R.id.vijaynahata);*/
+                                           vijaynahatalinlay = itemView.findViewById(R.id.vijaynahata);*//*
                                        }
                                    }
                                }
         );
-    }
+    }*/
 
-    public void deleteApi(String id, String bannerDate, String clientCd) {
+    public void deleteApi(final Context mycontext, String id, String bannerDate, String clientCd) {
         imagelist.clear();
+        mAdapter = new AdapterSearch(imagelist,mycontext);
+        imagelistad.setNestedScrollingEnabled(false);
+        imagelistad.setLayoutManager(new LinearLayoutManager(mycontext));
+        imagelistad.setAdapter(mAdapter);
         imagelistad.getAdapter().notifyDataSetChanged();
         progress.show();
         Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().getImagesListAferDelete(bannerDate,clientCd.trim(),id);
@@ -645,10 +650,14 @@ public class MainActivity extends AppCompatActivity {
                 progress.dismiss();
                 if(!res.isError()){
                     imagelist = res.getJsonRes();
+                    mAdapter = new AdapterSearch(imagelist,mycontext);
+                    imagelistad.setNestedScrollingEnabled(false);
+                    imagelistad.setLayoutManager(new LinearLayoutManager(mycontext));
+                    imagelistad.setAdapter(mAdapter);
                     imagelistad.getAdapter().notifyDataSetChanged();
                 }else{
                     progress.dismiss();
-                    Toast.makeText(MainActivity.this, "List is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mycontext, "List is empty", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -656,15 +665,15 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<DefaultResponse> call, Throwable t) {
                 progress.dismiss();
                 if (t instanceof IOException) {
-                    Toast.makeText(MainActivity.this, "Internet Issue ! Failed to process your request !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mycontext, "Internet Issue ! Failed to process your request !", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, "Data Conversion Issue ! Contact to admin", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mycontext, "Data Conversion Issue ! Contact to admin", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    public void sentToWhatsapp(File imageurl){
+    public void sentToWhatsapp(Context mycontext, File imageurl){
         Uri imgUri = Uri.parse(imageurl.getAbsolutePath());
         //Uri imgUri = Uri.parse(pictureFile.getAbsolutePath());
         Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
@@ -676,15 +685,15 @@ public class MainActivity extends AppCompatActivity {
         whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         try {
-            startActivity(whatsappIntent);
+            mycontext.startActivity(whatsappIntent);
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(MainActivity.this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
         }
     }
 
 
-    public void popup(final Context context, final String number, final File imageurl) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    public void popup(final Context mycontext, final String number, final File imageurl) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mycontext);
         builder.setCancelable(true);
         builder.setTitle("Alert");
         builder.setMessage("Want to send image to whatsapp group or an individual");
@@ -692,7 +701,7 @@ public class MainActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        sentToWhatsapp(imageurl);
+                        sentToWhatsapp(mycontext,imageurl);
                     }
                 });
         builder.setNeutralButton("Individual",
@@ -700,7 +709,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //if(number.length() == 10){
-                            openWhatsApp(number, imageurl);
+                            openWhatsApp(mycontext, number, imageurl);
                         //}else{
                         //    sentToWhatsappIndividual(number, imageurl);
                         //}
@@ -800,10 +809,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void openWhatsApp(String number, File imageurl) {
+    private void openWhatsApp(Context mycontext,String number, File imageurl) {
         Uri imgUri = Uri.parse(imageurl.getAbsolutePath());
         String smsNumber = "91"+number;
-        boolean isWhatsappInstalled = whatsappInstalledOrNot("com.whatsapp");
+        boolean isWhatsappInstalled = whatsappInstalledOrNot(mycontext,"com.whatsapp");
         if (isWhatsappInstalled) {
             /*Intent sendIntent = new Intent("android.intent.action.MAIN");
 
@@ -827,20 +836,20 @@ public class MainActivity extends AppCompatActivity {
             sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             sendIntent.putExtra(Intent.EXTRA_TEXT, "Please post it on your Facebook Account and WhatsApp status.");
             sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(sendIntent);
+            mycontext.startActivity(sendIntent);
         } else {
             Uri uri = Uri.parse("market://details?id=com.whatsapp");
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             Toast.makeText(this, "WhatsApp not Installed",
                     Toast.LENGTH_SHORT).show();
-            startActivity(goToMarket);
+            mycontext.startActivity(goToMarket);
         }
     }
 
-    public void checkWhatsApp(String number, File imageurl) {
+    public void checkWhatsApp(Context mycontext, String number, File imageurl) {
         Uri imgUri = Uri.parse(imageurl.getAbsolutePath());
         String smsNumber = "91"+number;
-        boolean isWhatsappInstalled = whatsappInstalledOrNot("com.whatsapp");
+        boolean isWhatsappInstalled = whatsappInstalledOrNot(mycontext,"com.whatsapp");
         if (isWhatsappInstalled) {
             Intent sendIntent = new Intent(Intent.ACTION_SEND);
             sendIntent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.Conversation"));//"com.whatsapp.Conversation"
@@ -851,18 +860,18 @@ public class MainActivity extends AppCompatActivity {
             sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             sendIntent.putExtra(Intent.EXTRA_TEXT, "Please post it on your Facebook Account and WhatsApp status.");
             sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(sendIntent);
+            mycontext.startActivity(sendIntent);
         } else {
             Uri uri = Uri.parse("market://details?id=com.whatsapp");
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             Toast.makeText(this, "WhatsApp not Installed",
                     Toast.LENGTH_SHORT).show();
-            startActivity(goToMarket);
+            mycontext.startActivity(goToMarket);
         }
     }
 
-    private boolean whatsappInstalledOrNot(String uri) {
-        PackageManager pm = getPackageManager();
+    private boolean whatsappInstalledOrNot(Context mycontext, String uri) {
+        PackageManager pm = mycontext.getPackageManager();
         boolean app_installed = false;
         try {
             pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
